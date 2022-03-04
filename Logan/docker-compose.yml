@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    depends_on:
+      - server
+    build: ./web
+    ports:
+      - '3000:80'
+
+  server:
+    depends_on:
+      - mysql
+    build: ./server
+    volumes:
+      - ./server/logfile/:/usr/local/tomcat/logfile/
+    ports:
+      - '5001:8080'
+
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./server/sql/:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: logan
+      MYSQL_USER: logan
+      MYSQL_PASSWORD: logan
+
+volumes:
+  db_data:

@@ -1,0 +1,9 @@
+FROM maven:3.6-jdk-8-alpine AS builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn -e -B dependency:resolve
+COPY src ./src
+RUN mvn -e -B package
+
+FROM tomcat:9.0.30-jdk8-openjdk-slim
+COPY --from=builder /app/target/logan-web-beta-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
